@@ -12,11 +12,15 @@
     <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
 </head>
 
-    <body>
-        <!--Add a nav bar here -->
-        {% include 'navbar.html' %}
-        <!--Add a dealer table here -->
-    This is the index page
-    </body>
+<body>
+    <!--Add a nav bar here -->
+    {% include 'navbar.html' %}
+    <!--Add a dealer table here -->
+    {% if content %}
+        {{ content }}
+    {% else %}
+        <p>Nothing is delivered</p>
+    {% endif %}
+</body>
 
 </html>

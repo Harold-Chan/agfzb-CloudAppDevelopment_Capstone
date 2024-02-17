@@ -58,8 +58,6 @@ class CarDealer:
         self.long = long
         # Dealer short name
         self.short_name = short_name
-        #Dealer state
-        self.state = state
         # Dealer state short form
         self.st = st
         # Dealer zip
