@@ -9,7 +9,11 @@ from django.contrib import messages
 from datetime import datetime
 import logging
 import json
+from urllib.parse import quote_plus
 from .restapis import get_dealers_from_cf
+from .restapis import get_dealer_by_id_from_cf
+from .restapis import get_dealer_reviews_from_cf
+
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -103,8 +107,54 @@ def get_dealerships(request):
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
-# def get_dealer_details(request, dealer_id):
-# ...
+def get_dealer_details(request, id):
+    if request.method == "GET":
+        context = {}
+        dealer_url = "https://cchharold-3000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        dealer = get_dealer_by_id_from_cf(dealer_url, id=id)
+        context["dealer"] = dealer
+    
+        encoded_id = quote_plus(str(id))
+        review_url = f"https://cchharold-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews?id={encoded_id}"
+        reviews = get_dealer_reviews_from_cf(review_url, id=id)
+        print(reviews)
+        context["reviews"] = reviews
+        
+        # Construct a dictionary with detailed dealer and reviews information
+        response_data = {
+            "dealer": {
+                "id": dealer.id,
+                "full_name": dealer.full_name,
+                "address": dealer.address,
+                "city": dealer.city,
+                "st": dealer.st,
+                "zip": dealer.zip,
+                "lat": dealer.lat,
+                "long": dealer.long
+            },
+            "reviews": [
+                {
+                    "reviewer": review.reviewer,
+                    "purchase": review.purchase,
+                    "review": review.review,
+                    "purchase_date": review.purchase_date.strftime('%Y-%m-%d'),
+                    "car_make": review.car_make,
+                    "car_model": review.car_model,
+                    "car_year": review.car_year,
+                    "sentiment": review.sentiment
+                }
+                for review in reviews
+            ]
+        }
+
+        # Convert the dictionary to a JSON string
+        response_json = json.dumps(response_data, cls=DjangoJSONEncoder)
+
+        # Return the JSON string as an HttpResponse
+        return HttpResponse(response_json, content_type='application/json')
+        #return render(request, 'djangoapp/dealer_details.html', context)
+
+
 
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
