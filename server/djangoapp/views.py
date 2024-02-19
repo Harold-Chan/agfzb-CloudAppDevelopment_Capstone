@@ -98,9 +98,9 @@ def get_dealerships(request):
         url = "https://cchharold-3000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         # Get dealers from the URL
         dealerships = get_dealers_from_cf(url)
-        # Concat all dealer's short name
-        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
-        context['content'] = dealer_names
+        # Pass the dealerships to the template
+        context['dealership_list'] = dealerships
+
         # Render index.html with context
         return render(request, 'djangoapp/index.html', context)
 
