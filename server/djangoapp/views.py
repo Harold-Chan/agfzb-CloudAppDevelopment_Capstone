@@ -126,3 +126,18 @@ def get_dealer_details(request, id):
 # def add_review(request, dealer_id):
 # ...
 
+def test_get_dealer_by_id_from_cf(request):
+    # Hardcoded URL for testing purposes
+    dealer_url = "https://cchharold-3000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+    
+    # Replace 123 with an actual dealer ID you want to test
+    dealer_id = 7
+    
+    # Call the get_dealer_by_id_from_cf function with the hardcoded URL and dealer ID
+    dealer = get_dealer_by_id_from_cf(dealer_url, id=dealer_id)
+    
+    # Convert the dealer object to a string for testing purposes
+    dealer_str = str(dealer)
+    
+    # Return an HttpResponse with the dealer details
+    return HttpResponse(f"Dealer: {dealer_str}")
