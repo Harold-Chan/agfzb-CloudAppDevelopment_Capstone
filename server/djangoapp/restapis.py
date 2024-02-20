@@ -10,11 +10,21 @@ from .models import DealerReview
 # e.g., response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
 #                                     auth=HTTPBasicAuth('apikey', api_key))
 def get_request(url, **kwargs):
+    api_key = kwargs.get("api_key")
     print(kwargs)
     print("GET from {} ".format(url))
     try:
-        # Call get method of requests library with URL and parameters
-        response = requests.get(url, headers={'Content-Type': 'application/json'},
+        if api_key:
+            params = dict()
+            params["text"] = kwargs["text"]
+            params["version"] = kwargs["version"]
+            params["features"] = kwargs["features"]
+            params["return_analyzed_text"] = kwargs["return_analyzed_text"]
+            response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
+                                    auth=HTTPBasicAuth('apikey', api_key))
+        else:
+            # Call get method of requests library with URL and parameters
+            response = requests.get(url, headers={'Content-Type': 'application/json'},
                                     params=kwargs)
     except:
         # If any error occurs
@@ -131,11 +141,8 @@ def get_dealer_reviews_from_cf(url, **kwargs):
                 review_obj.car_model = dealer_review["car_model"]
             if "car_year" in dealer_review:
                 review_obj.car_year = dealer_review["car_year"]
-            
-            # sentiment = analyze_review_sentiments(review_obj.review)
-            sentiment = "neutral"
-            print(sentiment)
-            review_obj.sentiment = sentiment
+            #review_obj.sentiment = analyze_review_sentiments(review_obj.review)
+            review_obj.sentiment = "neutral"
             results.append(review_obj)
 
     return results
@@ -146,6 +153,17 @@ def get_dealer_reviews_from_cf(url, **kwargs):
 # def analyze_review_sentiments(text):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
+def analyze_review_sentiments(dealerreview):
+    url = "https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/33a0a324-9b44-425d-8c42-ffcf7add756d"
+    api_key = "MnSXWIbRE-OK5PoKBw7H2_AfBEXlZSDdLkOKVVgPPivk"
 
+    params = {
+        "text": dealerreview,
+        "version": "2021-08-01",
+        "features": "sentiment",
+        "return_analyzed_text": True
+    }
 
-
+    response = get_request(url, api_key=api_key, params=params)
+    sentiment = response.get("sentiment", {}).get("document", {}).get("label", "Unknown")
+    return sentiment
