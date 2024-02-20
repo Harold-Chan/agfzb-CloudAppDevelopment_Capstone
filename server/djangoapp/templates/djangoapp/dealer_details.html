@@ -38,10 +38,15 @@
                 {% for review in reviews %}
                     <div class="card">
                         <div class="card-header">
-                            {{ review.name }}
+                            Reviewer: {{ review.name }}
                         </div>
                         <div class="card-body">
-                            <p class="card-text">{{ review.review }}</p>
+                            <p class="card-text">Review: {{ review.review }}</p>
+                            <p class="card-text">Purchase: {{ review.purchase }}</p>
+                            <p class="card-text">Purchase Date: {{ review.purchase_date }}</p>
+                            <p class="card-text">Car Make: {{ review.car_make }}</p>
+                            <p class="card-text">Car Model: {{ review.car_model }}</p>
+                            <p class="card-text">Car Year: {{ review.car_year }}</p>
                         </div>
                         <div class="card-footer text-muted">
                             Sentiment: <span class="badge badge-primary">{{ review.sentiment }}</span>
