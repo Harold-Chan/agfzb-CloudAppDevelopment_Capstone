@@ -8,10 +8,51 @@
 </head>
 
     <body>
-
     <!--Add a nav bar here -->
-
+    {% include 'navbar.html' %}
+    
     <!-- Add reviews as cards -->
+    <div class="container">
+        <h1>Dealer Details</h1>
+        {% if dealer %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    {{ dealer.full_name }}
+                </div>
+                <div class="card-body">
+                    <p><strong>Address:</strong> {{ dealer.address }}</p>
+                    <p><strong>City:</strong> {{ dealer.city }}</p>
+                    <p><strong>State:</strong> {{ dealer.st }}</p>
+                    <p><strong>Zip:</strong> {{ dealer.zip }}</p>
+                    <p><strong>Latitude:</strong> {{ dealer.lat }}</p>
+                    <p><strong>Longitude:</strong> {{ dealer.long }}</p>
+                </div>
+            </div>
+        {% else %}
+            <p>No dealer found with the provided ID.</p>
+        {% endif %}
+
+        <h2>Dealer Reviews</h2>
+        {% if reviews %}
+            <div class="card-deck mb-4">
+                {% for review in reviews %}
+                    <div class="card">
+                        <div class="card-header">
+                            {{ review.name }}
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">{{ review.review }}</p>
+                        </div>
+                        <div class="card-footer text-muted">
+                            Sentiment: <span class="badge badge-primary">{{ review.sentiment }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No reviews found for this dealer.</p>
+        {% endif %}
+    </div>
 
     </body>
 
