@@ -3,7 +3,7 @@ import json
 # import related models here
 from requests.auth import HTTPBasicAuth
 from .models import CarDealer
-
+from .models import DealerReview
 
 
 # Create a `get_request` to make HTTP GET requests
@@ -97,19 +97,30 @@ def get_dealer_by_id_from_cf(url, id):
 
 def get_dealer_reviews_from_cf(url, **kwargs):
     results = []
-    id = kwargs.get("id")
-    if id:
-        json_result = get_request(url, id=id)
-    else:
-        json_result = get_request(url)
-    print(json_result,"23")
+
+    # Call get_request with a URL parameter
+    json_result = get_request(url, **kwargs)
+
     if json_result:
-        reviews = json_result["data"]["docs"]
+        # Check if json_result is a list and not empty
+        if isinstance(json_result, list) and json_result:
+            # Example 1: Each item in json_result is a dealer review
+            if 'dealership' in json_result[0]:
+                reviews = json_result
+            # Example 2: Each item in json_result is a nested dictionary
+            elif 'data' in json_result[0]:
+                if 'docs' in json_result[0]['data']:
+                    reviews = json_result[0]['data']['docs']
+            else:
+                reviews = []
+        else:
+            reviews = []
+            
         for dealer_review in reviews:
-            review_obj = DealerReview(dealership=dealer_review["dealership"],
-                                   name=dealer_review["name"],
-                                   purchase=dealer_review["purchase"],
-                                   review=dealer_review["review"])
+            review_obj = DealerReview(dealership=dealer_review.get("dealership"),
+                                       name=dealer_review.get("name"),
+                                       purchase=dealer_review.get("purchase"),
+                                       review=dealer_review.get("review"))
             if "id" in dealer_review:
                 review_obj.id = dealer_review["id"]
             if "purchase_date" in dealer_review:
@@ -121,13 +132,14 @@ def get_dealer_reviews_from_cf(url, **kwargs):
             if "car_year" in dealer_review:
                 review_obj.car_year = dealer_review["car_year"]
             
-            #sentiment = analyze_review_sentiments(review_obj.review)
-            sentiment="neutral"
+            # sentiment = analyze_review_sentiments(review_obj.review)
+            sentiment = "neutral"
             print(sentiment)
             review_obj.sentiment = sentiment
             results.append(review_obj)
 
     return results
+
 
 
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
