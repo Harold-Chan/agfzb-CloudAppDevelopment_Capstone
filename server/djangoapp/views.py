@@ -96,11 +96,14 @@ def get_dealerships(request):
     context = {}
     if request.method == "GET":
         url = "https://cchharold-3000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
-        # Get dealers from the URL
-        dealerships = get_dealers_from_cf(url)
-        # Pass the dealerships to the template
-        context['dealership_list'] = dealerships
-
+        try:
+            # Get dealers from the URL
+            dealerships = get_dealers_from_cf(url)
+            # Pass the dealerships to the template
+            context['dealership_list'] = dealerships
+        except Exception as e:
+            # Handle exception and set error message
+            context['error_message'] = "Cannot fetch data from cloud: " + str(e)
         # Render index.html with context
         return render(request, 'djangoapp/index.html', context)
 

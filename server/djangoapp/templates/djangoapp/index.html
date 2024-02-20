@@ -17,30 +17,34 @@
     {% include 'navbar.html' %}
 
     <!--Add a dealer table here -->
-    <table class="table" id="table" data-filter-control="true">
-        <thead>
-            <tr>
-                <th data-field="id">ID</th>
-                <th data-field="full_name">Dealer Name</th>
-                <th data-field="city">City</th>
-                <th data-field="address">Address</th>
-                <th data-field="zip">Zip</th>
-                <th data-field="state" data-filter-control="select">State</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for dealer in dealership_list %}
+    {% if error_message %}
+        <p>{{ error_message }}</p>
+    {% else %}
+        <table class="table" id="table" data-filter-control="true">
+            <thead>
                 <tr>
-                    <td>{{ dealer.id }}</td>
-                    <td><a href="#">{{ dealer.full_name }}</a></td>   
-                    <td>{{ dealer.city }}</td>
-                    <td>{{ dealer.address }}</td>
-                    <td>{{ dealer.zip }}</td>
-                    <td>{{ dealer.st }}</td>
+                    <th data-field="id">ID</th>
+                    <th data-field="full_name">Dealer Name</th>
+                    <th data-field="city">City</th>
+                    <th data-field="address">Address</th>
+                    <th data-field="zip">Zip</th>
+                    <th data-field="state" data-filter-control="select">State</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for dealer in dealership_list %}
+                    <tr>
+                        <td>{{ dealer.id }}</td>
+                        <td><a href="#">{{ dealer.full_name }}</a></td>   
+                        <td>{{ dealer.city }}</td>
+                        <td>{{ dealer.address }}</td>
+                        <td>{{ dealer.zip }}</td>
+                        <td>{{ dealer.st }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 </body>
 <script>
     $(function() {
