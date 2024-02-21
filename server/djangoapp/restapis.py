@@ -2,6 +2,9 @@ import requests
 import json
 # import related models here
 from requests.auth import HTTPBasicAuth
+from ibm_watson import NaturalLanguageUnderstandingV1
+from ibm_watson.natural_language_understanding_v1 import Features, SentimentOptions
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from .models import CarDealer
 from .models import DealerReview
 
@@ -141,8 +144,8 @@ def get_dealer_reviews_from_cf(url, **kwargs):
                 review_obj.car_model = dealer_review["car_model"]
             if "car_year" in dealer_review:
                 review_obj.car_year = dealer_review["car_year"]
-            #review_obj.sentiment = analyze_review_sentiments(review_obj.review)
-            review_obj.sentiment = "neutral"
+            review_obj.sentiment = analyze_review_sentiments(review_obj.review)
+            #review_obj.sentiment = "neutral"
             results.append(review_obj)
 
     return results
@@ -153,17 +156,13 @@ def get_dealer_reviews_from_cf(url, **kwargs):
 # def analyze_review_sentiments(text):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
-def analyze_review_sentiments(dealerreview):
+def analyze_review_sentiments(text):
     url = "https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/33a0a324-9b44-425d-8c42-ffcf7add756d"
     api_key = "MnSXWIbRE-OK5PoKBw7H2_AfBEXlZSDdLkOKVVgPPivk"
+    authenticator = IAMAuthenticator(api_key)
+    natural_language_understanding = NaturalLanguageUnderstandingV1(version='2021-08-01',authenticator=authenticator)
+    natural_language_understanding.set_service_url(url)
+    response = natural_language_understanding.analyze( text=text+"hello hello hello",features=Features(sentiment=SentimentOptions(targets=[text+"hello hello hello"]))).get_result()
+    label = response['sentiment']['document']['label']
 
-    params = {
-        "text": dealerreview,
-        "version": "2021-08-01",
-        "features": "sentiment",
-        "return_analyzed_text": True
-    }
-
-    response = get_request(url, api_key=api_key, params=params)
-    sentiment = response.get("sentiment", {}).get("document", {}).get("label", "Unknown")
-    return sentiment
+    return(label)

@@ -49,7 +49,11 @@
                             <p class="card-text">Car Year: {{ review.car_year }}</p>
                         </div>
                         <div class="card-footer text-muted">
-                            Sentiment: <span class="badge badge-primary">{{ review.sentiment }}</span>
+                            Sentiment: <span class="badge 
+                                {% if review.sentiment == 'positive' %}badge-success
+                                {% elif review.sentiment == 'negative' %}badge-danger
+                                {% else %}badge-secondary
+                                {% endif %}">{{ review.sentiment }}</span>
                         </div>
                     </div>
                 {% endfor %}
