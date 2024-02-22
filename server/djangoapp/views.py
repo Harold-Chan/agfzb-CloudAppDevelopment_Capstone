@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
 # from .restapis import related methods
@@ -9,10 +11,7 @@ from django.contrib import messages
 from datetime import datetime
 import logging
 import json
-from .restapis import get_dealers_from_cf
-from .restapis import get_dealer_by_id_from_cf
-from .restapis import get_dealer_reviews_from_cf
-from .restapis import analyze_review_sentiments
+from .restapis import get_dealers_from_cf, get_dealer_by_id_from_cf, get_dealer_reviews_from_cf, analyze_review_sentiments, post_request
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -95,7 +94,7 @@ def registration_request(request):
 def get_dealerships(request):
     context = {}
     if request.method == "GET":
-        url = "https://cchharold-3000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        url = "https://cchharold-3000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         try:
             # Get dealers from the URL
             dealerships = get_dealers_from_cf(url)
@@ -112,11 +111,11 @@ def get_dealerships(request):
 def get_dealer_details(request, id):
     if request.method == "GET":
         context = {}
-        dealer_url = "https://cchharold-3000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        dealer_url = "https://cchharold-3000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         dealer = get_dealer_by_id_from_cf(dealer_url, id=id)
         context["dealer"] = dealer
     
-        review_url = "https://cchharold-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
+        review_url = "https://cchharold-5000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
         reviews = get_dealer_reviews_from_cf(review_url, id=id)
         print(reviews)
         context["reviews"] = reviews
@@ -126,6 +125,31 @@ def get_dealer_details(request, id):
 
 
 # Create a `add_review` view to submit a review
-# def add_review(request, dealer_id):
-# ...
+@login_required
+@require_POST
+def add_review(request, id):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return HttpResponse("User is not authenticated")
+
+    # Create the review dictionary
+    review = {}
+    review["time"] = datetime.utcnow().isoformat()
+    review["name"] = request.user.username  # Assuming the user's username is used as the name
+    review["dealership"] = id
+    review["review"] = "This is a great car dealer"
+
+    # Create the json_payload dictionary
+    json_payload = {}
+    json_payload["review"] = review
+
+    # URL for the post request
+    url = "https://cchharold-5000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
+
+    # Call the post_request method
+    result = post_request(url, json_payload, id=id)
+
+    # Return the result to the view method
+    return HttpResponse(result)
+
 

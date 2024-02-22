@@ -5,8 +5,7 @@ from requests.auth import HTTPBasicAuth
 from ibm_watson import NaturalLanguageUnderstandingV1
 from ibm_watson.natural_language_understanding_v1 import Features, SentimentOptions
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-from .models import CarDealer
-from .models import DealerReview
+from .models import CarDealer, DealerReview
 
 
 # Create a `get_request` to make HTTP GET requests
@@ -39,6 +38,15 @@ def get_request(url, **kwargs):
 
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
+def post_request(url, payload, **kwargs):
+    print(kwargs)
+    print("POST to {} ".format(url))
+    print(payload)
+    response = requests.post(url, params=kwargs, json=payload)
+    status_code = response.status_code
+    print("With status {} ".format(status_code))
+    json_data = json.loads(response.text)
+    return json_data
 
 
 # Create a get_dealers_from_cf method to get dealers from a cloud function
