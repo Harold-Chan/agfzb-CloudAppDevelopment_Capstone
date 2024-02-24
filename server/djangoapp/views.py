@@ -143,23 +143,25 @@ def add_review(request, id):
         if request.user.is_authenticated:
             username = request.user.username
             print(request.POST)
+            payload = dict()
             car_id = request.POST["car"]
             car = CarModel.objects.get(pk=car_id)
+            payload["time"] = datetime.utcnow().isoformat()
+            payload["name"] = username
+            payload["dealership"] = id
+            payload["id"] = id
+            payload["review"] = request.POST["content"]
+            payload["purchase"] = False
+            if "purchasecheck" in request.POST:
+                if request.POST["purchasecheck"] == 'on':
+                    payload["purchase"] = True
+            payload["purchase_date"] = request.POST["purchasedate"]
+            payload["car_make"] = car.make.name
+            payload["car_model"] = car.name
+            payload["car_year"] = int(car.year.strftime("%Y"))
 
-            review = {
-                "id":id,
-                "time":datetime.utcnow().isoformat(),
-                "name":request.user.username,  # Assuming you want to use the authenticated user's name
-                "dealership" :id,                
-                "review": request.POST["content"],  # Extract the review from the POST request
-                "purchase": True,  # Extract purchase info from POST
-                "purchase_date":request.POST["purchasedate"],  # Extract purchase date from POST
-                "car_make": car.carmake.name,  # Extract car make from POST
-                "car_model": car.name,  # Extract car model from POST
-                "car_year": int(car.year.strftime("%Y")),  # Extract car year from POST
-            }
-            review=json.dumps(review,default=str)
-            print("\nREVIEW:",review)
-            response = post_request(post_review_url, review, id = id)
+            new_payload = {}
+            new_payload["review"] = payload
+            response = post_request(post_review_url, new_payload, id = id)
             return HttpResponse(response.text)
         return redirect("djangoapp:dealer_details", id = id)

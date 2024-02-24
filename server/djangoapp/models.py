@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.timezone import now
-
+from datetime import datetime
 
 # Create your models here.
 
@@ -35,7 +35,8 @@ class CarModel(models.Model):
         ('pick_up', 'Pick Up')
     ]
     car_type = models.CharField(null=False, max_length=20, choices=TYPE_CHOICES, default='hatchback')
-    year = models.DateField()
+    YEAR_CHOICES = [(year, year) for year in range(datetime.now().year, 1949, -1)]
+    year = models.IntegerField(choices=YEAR_CHOICES)
 
     def __str__(self):
         return f"Car Model: {self.name}, Make: {self.car_make}, Type: {self.car_type}, Year: {self.year}"
