@@ -11,6 +11,70 @@
 
 </head>
     <body>
-    <!--Add review form here -->
+        {% include 'navbar.html' %}
+        <!--Add review form here -->
+        <div class="container">
+            <h2 class="text-center mb-4">Add a review for {{ dealer.full_name }}</h2>
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="review">Your Review:</label>
+                            <textarea id="review" name="content" rows="4" cols="50" class="form-control" required></textarea>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="purchase" name="purchase" value="True" class="form-check-input" onclick="toggleInputs()">
+                            <label class="form-check-label" for="purchase">Did you make a purchase?</label>
+                        </div>
+                        <div class="form-group">
+                            <label for="purchase_date">Purchase Date:</label>
+                            <input type="date" id="purchase_date" name="purchase_date" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="car_make">Car Make:</label>
+                            <input type="text" id="car_make" name="car_make" class="form-control" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="car_model">Car Model:</label>
+                            <input type="text" id="car_model" name="car_model" class="form-control" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="car_year">Car Year:</label>
+                            <select id="car_year" name="car_year" class="form-control" disabled>
+                                {% for year in years %}
+                                    <option value="{{ year }}">{{ year }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+
+        <script>
+            function toggleInputs() {
+                var purchase = document.getElementById("purchase");
+                var purchase_date = document.getElementById("purchase_date");
+                var car_make = document.getElementById("car_make");
+                var car_model = document.getElementById("car_model");
+                var car_year = document.getElementById("car_year");
+    
+                if (purchase.checked) {
+                    purchase_date.disabled = false;
+                    car_make.disabled = false;
+                    car_model.disabled = false;
+                    car_year.disabled = false;
+                } else {
+                    purchase_date.disabled = true;
+                    car_make.disabled = true;
+                    car_model.disabled = true;
+                    car_year.disabled = true;
+                }
+            }
+        </script>
     </body>
 </html>
