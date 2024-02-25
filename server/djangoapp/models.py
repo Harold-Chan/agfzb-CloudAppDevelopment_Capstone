@@ -14,7 +14,7 @@ class CarMake(models.Model):
     description = models.TextField(max_length=200)
 
     def __str__(self):
-        return f"Car Make: {self.name}, Description: {self.description}"
+        return f"Brand: {self.name}"
 
 
 # <HINT> Create a Car Model model `class CarModel(models.Model):`:
@@ -26,8 +26,8 @@ class CarMake(models.Model):
 # - Any other fields you would like to include in car model
 # - __str__ method to print a car model object
 class CarModel(models.Model):
+    car_id = models.AutoField(primary_key=True, default=None)
     name = models.CharField(null=False, max_length=30)
-    car_make = models.ForeignKey(CarMake, on_delete=models.CASCADE)
     dealer_id = models.IntegerField()
     TYPE_CHOICES = [
         ('hatchback', 'Hatchback'), ('suv', 'SUV'), ('saloon', 'Saloon'),
@@ -35,11 +35,11 @@ class CarModel(models.Model):
         ('pick_up', 'Pick Up')
     ]
     car_type = models.CharField(null=False, max_length=20, choices=TYPE_CHOICES, default='hatchback')
-    YEAR_CHOICES = [(year, year) for year in range(datetime.now().year, 1949, -1)]
-    year = models.IntegerField(choices=YEAR_CHOICES)
+    car_make = models.ForeignKey(CarMake, on_delete=models.CASCADE)
+    car_year = models.DateField(default=now)
 
     def __str__(self):
-        return f"Car Model: {self.name}, Make: {self.car_make}, Type: {self.car_type}, Year: {self.year}"
+        return "Name: " + self.name
 
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
 class CarDealer:

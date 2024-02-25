@@ -25,6 +25,9 @@
                 <tr>
                     <th data-field="id">ID</th>
                     <th data-field="full_name">Dealer Name</th>
+                    {% if user.is_authenticated %}
+                    <th data-field="add_review">Add Review</a></th>
+                    {% endif %}
                     <th data-field="city">City</th>
                     <th data-field="address">Address</th>
                     <th data-field="zip">Zip</th>
@@ -35,7 +38,10 @@
                 {% for dealer in dealership_list %}
                     <tr>
                         <td>{{ dealer.id }}</td>
-                        <td><a href="{% url 'djangoapp:dealer_details' dealer.id %}">{{ dealer.full_name }}</a></td>   
+                        <td><a href="{% url 'djangoapp:dealer_details' dealer.id %}">{{ dealer.full_name }}</a></td>
+                        {% if user.is_authenticated %}
+                        <td><a href="{% url 'djangoapp:add_review' dealer.id %}" class="btn btn-primary">Add Review</a></td>
+                        {% endif %}
                         <td>{{ dealer.city }}</td>
                         <td>{{ dealer.address }}</td>
                         <td>{{ dealer.zip }}</td>

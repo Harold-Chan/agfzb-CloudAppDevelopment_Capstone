@@ -13,68 +13,52 @@
     <body>
         {% include 'navbar.html' %}
         <!--Add review form here -->
-        <div class="container">
-            <h2 class="text-center mb-4">Add a review for {{ dealer.full_name }}</h2>
-            <form action="" method="post">
+        <div class="container-fluid">
+            <h3>Add a review about <b>{{dealer.full_name}}</b></h3>
+            <form action="{% url 'djangoapp:add_review' dealer.id %}" method="POST">
                 {% csrf_token %}
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="review">Your Review:</label>
-                            <textarea id="review" name="content" rows="4" cols="50" class="form-control" required></textarea>
-                        </div>
-                        <div class="form-check">
-                            <input type="checkbox" id="purchase" name="purchase" value="True" class="form-check-input" onclick="toggleInputs()">
-                            <label class="form-check-label" for="purchase">Did you make a purchase?</label>
-                        </div>
-                        <div class="form-group">
-                            <label for="purchase_date">Purchase Date:</label>
-                            <input type="date" id="purchase_date" name="purchase_date" class="form-control" disabled>
-                        </div>
+                <div class="form-group">
+        
+                    <div class="mb-3">
+                        <label for="content"><b>Enter the review content: </b></label>
+                        <textarea class="form-control" id="content" name="content" rows="2" required></textarea>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="car_make">Car Make:</label>
-                            <input type="text" id="car_make" name="car_make" class="form-control" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label for="car_model">Car Model:</label>
-                            <input type="text" id="car_model" name="car_model" class="form-control" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label for="car_year">Car Year:</label>
-                            <select id="car_year" name="car_year" class="form-control" disabled>
-                                {% for year in years %}
-                                    <option value="{{ year }}">{{ year }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
+
+                    <div class="form-check">
+                        <label class="form-check-input" for="purchasecheck">
+                        Do you buy the car from {{dealer.full_name}}?   
+                        </label>
+                        <br>
+                        <input class="form-check-input" type="checkbox" name="purchasecheck" id="purchasecheck">
+                        <label class="text-muted">(fill in information below if yes)</label>
                     </div>
+
+                    <div class="mb-3">
+                        <label for="car"><b>Select your car (model-make-year):</b></label>
+                        <select name="car" id="car" class="form-select" required>
+                            {% for car in cars %}
+                            <option selected value={{car.car_id}}>{{car.name}}-{{car.car_make.name}}-{{ car.car_year|date:"Y" }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+        
+                      <div class="mb-3">
+                          <label for="purchasedate"><b>Select Your Purchase Date: </b></label>
+                          <input class="date-own form-control" style="width: 300px;" type="date" name="purchasedate" id="purchasedate">
+                      </div>
+        
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <div>
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </div>
             </form>
         </div>
-
-        <script>
-            function toggleInputs() {
-                var purchase = document.getElementById("purchase");
-                var purchase_date = document.getElementById("purchase_date");
-                var car_make = document.getElementById("car_make");
-                var car_model = document.getElementById("car_model");
-                var car_year = document.getElementById("car_year");
-    
-                if (purchase.checked) {
-                    purchase_date.disabled = false;
-                    car_make.disabled = false;
-                    car_model.disabled = false;
-                    car_year.disabled = false;
-                } else {
-                    purchase_date.disabled = true;
-                    car_make.disabled = true;
-                    car_model.disabled = true;
-                    car_year.disabled = true;
-                }
-            }
-        </script>
+        </body>
+        
+        <script type="text/javascript">
+              $('.date-own').datepicker({
+                 format: 'mm/dd/yyyy'
+               });
+         </script>
     </body>
 </html>
