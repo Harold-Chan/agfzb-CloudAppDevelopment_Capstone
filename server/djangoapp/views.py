@@ -161,5 +161,4 @@ def add_review(request, id):
             new_payload = {}
             new_payload["review"] = payload
             response = post_request(post_review_url, new_payload, id = id)
-            return HttpResponse(response.text)
         return redirect("djangoapp:dealer_details", id = id)
