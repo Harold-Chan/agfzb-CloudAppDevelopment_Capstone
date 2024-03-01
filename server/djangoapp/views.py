@@ -74,7 +74,12 @@ def registration_request(request):
         first_name = request.POST['firstname']
         last_name = request.POST['lastname']
         password = request.POST['psw']
+        password_confirm = request.POST['password_confirm']
         user_exist = False
+
+        if password != password_confirm:
+            messages.error(request, 'Passwords do not match')
+            return render(request, 'djangoapp/registration.html', context)
         try:
             # Check if user already exists
             User.objects.get(username=username)
@@ -117,7 +122,9 @@ def get_dealer_details(request, id):
         context["dealer"] = dealer
     
         reviews = get_dealer_reviews_from_cf(get_review_url, id=id)
+        print("201")
         print(reviews)
+        print("301")
         context["reviews"] = reviews
         
         return render(request, 'djangoapp/dealer_details.html', context)

@@ -130,7 +130,8 @@ def get_dealer_reviews_from_cf(url, **kwargs):
                 reviews = []
         else:
             reviews = []
-            
+        
+        reviews = sorted(reviews, key=lambda x: x.get('time'), reverse=True)
         for dealer_review in reviews:
             review_obj = DealerReview(dealership=dealer_review.get("dealership"),
                                        name=dealer_review.get("name"),
