@@ -18,9 +18,9 @@ logger = logging.getLogger(__name__)
 
 
 # Create your views here.
-dealer_url = "https://cchharold-3000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
-get_review_url = "https://cchharold-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
-post_review_url = "https://cchharold-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
+dealer_url = "https://cchharold-3000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai/dealerships/get"
+get_review_url = "https://cchharold-5000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai/api/get_reviews"
+post_review_url = "https://cchharold-5000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai/api/post_review"
 
 # Create an `about` view to render a static about page
 def about(request):
