@@ -34,13 +34,12 @@
                     {% endfor %}
                 </div>
             </div>
-        {% if user.is_authenticated %}
-        <a href="{% url 'djangoapp:add_review' dealer.id %}" class="btn btn-link" style="position: relative; left: 45%;">Add Review</a>
-        {% endif %}
         {% else %}
             <p>No reviews are available.</p>
         {% endif %}
-
+        {% if user.is_authenticated %}
+        <a href="{% url 'djangoapp:add_review' dealer.id %}" class="btn btn-link" style="position: relative; left: 45%;">Add Review</a>
+        {% endif %}
     </body>
 
 </html>
